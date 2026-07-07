@@ -31,7 +31,25 @@ func (m *Manager) Relay(pkt *Packet, interfaces map[string]*net.Interface) error
 		)
 
 		// Im nächsten Schritt wird hier WriteTo() aktiviert.
-		_ = cm
+		_, err := m.packet.WriteTo(
+			pkt.Data,
+			cm,
+			m.group,
+		)
+		if err != nil {
+			return fmt.Errorf(
+				"relay to %s: %w",
+				iface.Name,
+				err,
+			)
+		}
+
+		fmt.Printf(
+			"Sent %d bytes via %s\n",
+			pkt.Length,
+			iface.Name,
+		)
+		
 	}
 
 	fmt.Println()
