@@ -4,10 +4,9 @@ import (
 	"fmt"
 )
 
-const (
-	Name    = "UDP Broadcast Relay"
-	Version = "dev"
-)
+const Name = "UDP Broadcast Relay"
+
+var Version = "dev"
 
 func main() {
 	fmt.Println(Name)
