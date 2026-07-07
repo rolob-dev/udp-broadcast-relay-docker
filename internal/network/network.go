@@ -4,15 +4,17 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/config"
+	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/runtime"
 )
 
-func Validate(cfg *config.Config) error {
+func Validate(rt *runtime.Runtime) error {
 
 	interfaces, err := net.Interfaces()
 	if err != nil {
 		return err
 	}
+
+	rt.Interfaces = make(map[string]*net.Interface)
 
 	available := make(map[string]net.Interface)
 
@@ -23,11 +25,14 @@ func Validate(cfg *config.Config) error {
 	fmt.Println("Validating interfaces")
 	fmt.Println()
 
-	for _, name := range cfg.Interfaces {
+	for _, name := range rt.Config.Interfaces {
 
-		if _, ok := available[name]; !ok {
+		iface, ok := available[name]
+		if !ok {
 			return fmt.Errorf("interface %q not found", name)
 		}
+
+		rt.Interfaces[name] = &iface
 
 		fmt.Printf("✓ %s\n", name)
 	}

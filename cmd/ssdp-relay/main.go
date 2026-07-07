@@ -6,6 +6,7 @@ import (
 
 	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/config"
 	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/network"
+	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/runtime"
 	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/socket"
 )
 
@@ -24,6 +25,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	rt := &runtime.Runtime{
+		Config: cfg,
+	}
+
+	rt.Socket = socket.New()
+
 	fmt.Println("Configured interfaces")
 	fmt.Println()
 
@@ -33,13 +40,14 @@ func main() {
 
 	fmt.Println()
 
-	if err := network.Validate(cfg); err != nil {
+	if err := network.Validate(rt); err != nil {
 		log.Fatal(err)
 	}
 
-	if err := socket.Open(cfg); err != nil {
+	if err := rt.Socket.Open(); err != nil {
 		log.Fatal(err)
 	}
+	defer rt.Socket.Close()
 
 	fmt.Println("Ready.")
 }
