@@ -1,5 +1,8 @@
 ARG ALPINE=alpine:3.22
 
+#
+# Builder
+#
 FROM ${ALPINE} AS builder
 
 RUN apk add --no-cache \
@@ -14,16 +17,27 @@ WORKDIR /src
 # Offizielles Repository klonen
 RUN git clone https://github.com/udp-redux/udp-broadcast-relay-redux.git .
 
-# Optional: auf einen bestimmten Release wechseln
-# RUN git checkout v1.3.0
+# Kompilieren und Build-Ausgabe anzeigen
+RUN make && \
+    echo "=========================================" && \
+    echo "Build directory:" && \
+    pwd && \
+    echo && \
+    echo "Files:" && \
+    ls -lah && \
+    echo "========================================="
 
-RUN make
-
+#
+# Runtime
+#
 FROM ${ALPINE}
 
 WORKDIR /runtime
 
-COPY --from=builder /src/udp-broadcast-relay-redux /usr/local/bin/
+# Binary übernehmen
+COPY --from=builder /src/udp-broadcast-relay-redux /usr/local/bin/udp-broadcast-relay-redux
+
+# Entrypoint übernehmen
 COPY entrypoint.sh .
 
 RUN chmod +x entrypoint.sh
