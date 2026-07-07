@@ -6,6 +6,7 @@ import (
 
 	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/config"
 	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/network"
+	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/socket"
 )
 
 const Name = "SSDP Relay"
@@ -33,6 +34,10 @@ func main() {
 	fmt.Println()
 
 	if err := network.Validate(cfg); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := socket.Open(cfg); err != nil {
 		log.Fatal(err)
 	}
 
