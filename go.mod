@@ -1,1 +1,3 @@
-go mod init github.com/rolob-dev/udp-broadcast-relay-docker
+module github.com/rolob-dev/udp-broadcast-relay-docker
+
+go 1.25
