@@ -6,7 +6,7 @@ import (
 
 const (
 	Name    = "UDP Broadcast Relay"
-	Version = "0.1.0"
+	Version = "dev"
 )
 
 func main() {
