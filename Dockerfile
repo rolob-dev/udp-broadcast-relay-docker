@@ -1,45 +1,21 @@
-ARG ALPINE=alpine:3.22
-
-#
 # Builder
-#
-FROM ${ALPINE} AS builder
+FROM golang:1.25-alpine AS builder
 
-RUN apk add --no-cache \
-    git \
-    gcc \
-    musl-dev \
-    linux-headers \
-    make
+WORKDIR /app
 
-WORKDIR /src
+COPY . .
 
-# Offizielles Repository klonen
-RUN git clone https://github.com/udp-redux/udp-broadcast-relay-redux.git .
+RUN go mod tidy
+RUN CGO_ENABLED=0 GOOS=linux go build \
+    -ldflags="-s -w" \
+    -o ssdp-relay \
+    ./cmd/ssdp-relay
 
-# Kompilieren und Build-Ausgabe anzeigen
-RUN make && \
-    echo "=========================================" && \
-    echo "Build directory:" && \
-    pwd && \
-    echo && \
-    echo "Files:" && \
-    ls -lah && \
-    echo "========================================="
-
-#
 # Runtime
-#
-FROM ${ALPINE}
+FROM alpine:3.22
 
-WORKDIR /runtime
+WORKDIR /
 
-# Binary übernehmen
-COPY --from=builder /src/udp-broadcast-relay-redux /usr/local/bin/udp-broadcast-relay-redux
+COPY --from=builder /app/ssdp-relay .
 
-# Entrypoint übernehmen
-COPY entrypoint.sh .
-
-RUN chmod +x entrypoint.sh
-
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./ssdp-relay"]

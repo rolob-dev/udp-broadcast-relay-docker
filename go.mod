@@ -1,0 +1,1 @@
+go mod init github.com/rolob-dev/udp-broadcast-relay-docker
