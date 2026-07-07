@@ -51,7 +51,11 @@ func main() {
 
 	if err := rt.Socket.Join(rt.Interfaces); err != nil {
 		log.Fatal(err)
-	}
+	}	
 
-	fmt.Println("Ready.")
+	fmt.Println("*** BEFORE LISTEN ***")
+	
+	if err := rt.Socket.Listen(rt.Interfaces); err != nil {
+		log.Fatal(err)
+	}
 }
