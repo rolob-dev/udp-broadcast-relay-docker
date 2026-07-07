@@ -21,6 +21,12 @@ func (m *Manager) Listen(interfaces map[string]*net.Interface) error {
 		fmt.Printf("Interface : %s\n", pkt.Interface.Name)
 		fmt.Printf("Source    : %s\n", pkt.Source)
 		fmt.Printf("Target    : %s\n", pkt.Control.Dst)
+		fmt.Printf("IfIndex   : %d\n", pkt.Control.IfIndex)
+
+		if pkt.Control.Src != nil {
+			fmt.Printf("Dst Src   : %s\n", pkt.Control.Src)
+		}
+		
 		fmt.Printf("Length    : %d bytes\n", pkt.Length)
 		fmt.Println()
 		fmt.Println("----------------------------------------")

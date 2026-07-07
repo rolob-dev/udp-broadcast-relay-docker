@@ -28,15 +28,22 @@ func (m *Manager) Receive(interfaces map[string]*net.Interface) (*Packet, error)
 			continue
 		}
 
+		// DEBUG:
+		//
+		// Für diesen Test akzeptieren wir sowohl Multicast
+		// als auch Unicast-Pakete auf UDP/1900.
+		//	
+		// Nach dem Test werden diese Filter wieder aktiviert.
+		//
 		// Nur Multicast interessiert uns.
-		if !cm.Dst.IsMulticast() {
-			continue
-		}
+		// if !cm.Dst.IsMulticast() {
+		// 	continue
+		//}
 
 		// Nur SSDP (239.255.255.250)
-		if !cm.Dst.Equal(m.group.IP) {
-			continue
-		}
+		//if !cm.Dst.Equal(m.group.IP) {
+		//	continue
+		//}
 
 		var iface *net.Interface
 
