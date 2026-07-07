@@ -1,23 +1,49 @@
-fmt.Println("Configured networks")
-fmt.Println()
+package main
 
-if err := network.Discover(cfg); err != nil {
-	log.Fatal(err)
-}
+import (
+	"fmt"
+	"log"
 
-for _, network := range cfg.Networks {
+	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/config"
+	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/network"
+)
 
-	fmt.Printf("✓ %s\n", network.CIDR)
+const Name = "SSDP Relay"
 
-	if network.Interface != nil {
-		fmt.Printf("    Interface : %s\n", network.Interface.Name)
-	} else {
-		fmt.Printf("    Interface : not found\n")
-	}
+var Version = "dev"
 
-	for _, addr := range network.Addresses {
-		fmt.Printf("    Address   : %s\n", addr)
-	}
+func main() {
 
+	fmt.Println(Name)
+	fmt.Println("Version:", Version)
 	fmt.Println()
+
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Configured networks")
+	fmt.Println()
+
+	if err := network.Discover(cfg); err != nil {
+		log.Fatal(err)
+	}
+
+	for _, network := range cfg.Networks {
+
+		fmt.Printf("✓ %s\n", network.CIDR)
+
+		if network.Interface != nil {
+			fmt.Printf("    Interface : %s\n", network.Interface.Name)
+		} else {
+			fmt.Printf("    Interface : not found\n")
+		}
+
+		for _, addr := range network.Addresses {
+			fmt.Printf("    Address   : %s\n", addr)
+		}
+
+		fmt.Println()
+	}
 }
