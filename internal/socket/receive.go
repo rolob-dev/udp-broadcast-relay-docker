@@ -16,6 +16,12 @@ func (m *Manager) Receive(interfaces map[string]*net.Interface) (*Packet, error)
 			return nil, err
 		}
 
+		udp, ok := src.(*net.UDPAddr)
+		if ok && udp.Port == 1900 {
+    		fmt.Println("Ignoring self-generated packet")
+    		continue
+		}
+
 		// Ohne ControlMessage können wir das Interface
 		// nicht bestimmen.
 		if cm == nil {
