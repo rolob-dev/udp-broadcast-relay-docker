@@ -26,10 +26,19 @@ func (m *Manager) Open() error {
 	m.conn = conn
 	m.packet = ipv4.NewPacketConn(conn)
 
+	// Control Messages aktivieren
+	if err := m.packet.SetControlMessage(
+		ipv4.FlagInterface,
+		true,
+	); err != nil {
+		return err
+	}
+
 	fmt.Println("Opening packet socket")
 	fmt.Println()
 
 	fmt.Println("✓ UDP :1900")
+	fmt.Println("✓ Interface control messages enabled")
 	fmt.Println()
 
 	return nil
