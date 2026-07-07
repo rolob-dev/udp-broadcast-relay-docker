@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/config"
+	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/network"
 )
 
 const Name = "SSDP Relay"
@@ -28,4 +29,12 @@ func main() {
 	for _, iface := range cfg.Interfaces {
 		fmt.Printf("✓ %s\n", iface)
 	}
+
+	fmt.Println()
+
+	if err := network.Validate(cfg); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Ready.")
 }
