@@ -23,8 +23,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Configured networks")
+	fmt.Println("Configured interfaces")
 	fmt.Println()
+
+	for _, iface := range cfg.Interfaces {
+		fmt.Printf("✓ %s\n", iface)
+	}
 
 	if err := network.Discover(cfg); err != nil {
 		log.Fatal(err)

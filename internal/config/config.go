@@ -7,38 +7,32 @@ import (
 	"strings"
 )
 
-type Network struct {
-	CIDR *net.IPNet
-
-	Interface *net.Interface
-	Addresses []*net.IPNet
-}
-
 type Config struct {
-	Networks []Network
+	Interfaces []string
 }
 
 func Load() (*Config, error) {
 
-	value := os.Getenv("NETWORKS")
+	value := os.Getenv("INTERFACES")
 	if value == "" {
-		return nil, fmt.Errorf("environment variable NETWORKS is not set")
+		return nil, fmt.Errorf("environment variable INTERFACES is not set")
 	}
 
 	cfg := &Config{}
 
-	for _, network := range strings.Split(value, ",") {
+	for _, iface := range strings.Split(value, ",") {
 
-		network = strings.TrimSpace(network)
+		iface = strings.TrimSpace(iface)
 
-		_, cidr, err := net.ParseCIDR(network)
-		if err != nil {
-			return nil, fmt.Errorf("invalid network '%s': %w", network, err)
+		if iface == "" {
+			continue
 		}
 
-		cfg.Networks = append(cfg.Networks, Network{
-			CIDR: cidr,
-		})
+		cfg.Interfaces = append(cfg.Interfaces, iface)
+	}
+
+	if len(cfg.Interfaces) == 0 {
+		return nil, fmt.Errorf("no interfaces configured")
 	}
 
 	return cfg, nil
