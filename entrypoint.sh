@@ -34,11 +34,11 @@ echo "Starting udp-broadcast-relay-redux"
 
 echo
 echo "Binary:"
-./udp-broadcast-relay-redux --help 2>/dev/null | head -1 || true
+/usr/local/bin/udp-broadcast-relay-redux --help 2>/dev/null | head -1 || true
 
 echo
 echo "Interfaces:"
-for iface in $(echo "$INTERFACES" | tr ',' ' ')
+for iface in $(printf "%s" "$INTERFACES" | tr ',' ' ')
 do
     echo "  - $iface"
 done
@@ -50,7 +50,7 @@ echo "  $*"
 echo "========================================="
 echo
 
-for iface in $(echo "$INTERFACES" | tr ',' ' ')
+for iface in $(printf "%s" "$INTERFACES" | tr ',' ' ')
 do
     if ! ip link show "$iface" >/dev/null 2>&1; then
         echo "ERROR: Interface '$iface' not found!"
@@ -58,4 +58,4 @@ do
     fi
 done
 
-exec ./udp-broadcast-relay-redux "$@"
+exec /usr/local/bin/udp-broadcast-relay-redux "$@"

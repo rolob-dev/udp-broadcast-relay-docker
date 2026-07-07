@@ -23,7 +23,7 @@ FROM ${ALPINE}
 
 WORKDIR /runtime
 
-COPY --from=builder /src/udp-broadcast-relay-redux .
+COPY --from=builder /src/udp-broadcast-relay-redux /usr/local/bin/
 COPY entrypoint.sh .
 
 RUN chmod +x entrypoint.sh
