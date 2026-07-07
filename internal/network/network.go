@@ -1,7 +1,6 @@
 package network
 
 import (
-	"fmt"
 	"net"
 
 	"github.com/rolob-dev/udp-broadcast-relay-docker/internal/config"
@@ -14,29 +13,36 @@ func Discover(cfg *config.Config) error {
 		return err
 	}
 
-	fmt.Println("Detected interfaces")
-	fmt.Println()
+	for i := range cfg.Networks {
 
-	for _, iface := range interfaces {
+		for _, iface := range interfaces {
 
-		addrs, err := iface.Addrs()
-		if err != nil {
-			continue
-		}
-
-		fmt.Printf("%s\n", iface.Name)
-
-		for _, addr := range addrs {
-
-			ipnet, ok := addr.(*net.IPNet)
-			if !ok {
+			addrs, err := iface.Addrs()
+			if err != nil {
 				continue
 			}
 
-			fmt.Printf("    %s\n", ipnet.String())
-		}
+			for _, addr := range addrs {
 
-		fmt.Println()
+				ipnet, ok := addr.(*net.IPNet)
+				if !ok {
+					continue
+				}
+
+				// Nur IPv4
+				if ipnet.IP.To4() == nil {
+					continue
+				}
+
+				// Liegt die IP in unserem konfigurierten Netz?
+				if cfg.Networks[i].CIDR.Contains(ipnet.IP) {
+
+					cfg.Networks[i].Interface = &iface
+					cfg.Networks[i].Addresses = append(cfg.Networks[i].Addresses, ipnet)
+
+				}
+			}
+		}
 	}
 
 	return nil

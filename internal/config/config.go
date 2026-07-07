@@ -9,6 +9,9 @@ import (
 
 type Network struct {
 	CIDR *net.IPNet
+
+	Interface *net.Interface
+	Addresses []*net.IPNet
 }
 
 type Config struct {
