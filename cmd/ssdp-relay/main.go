@@ -49,5 +49,9 @@ func main() {
 	}
 	defer rt.Socket.Close()
 
+	if err := rt.Socket.Join(rt.Interfaces); err != nil {
+		log.Fatal(err)
+	}
+
 	fmt.Println("Ready.")
 }
